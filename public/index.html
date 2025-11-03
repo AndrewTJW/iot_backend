@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>ISS Tracker</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <style>
+    #map {
+      height: 500px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+  <script>
+    const map = L.map('map').setView([0, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    fetch('/data').then(res => res.json()).then(data => {
+      data.forEach(point => L.marker([point.latitude, point.longitude]).addTo(map).bindPopup(`Alt: ${point.altitude} km`));
+      const path = data.map(p => [p.latitude, p.longitude]);
+      L.polyline(path, { color: 'red' }).addTo(map); // ISS path
+    });
+  </script>
+</body>
+
+</html>
